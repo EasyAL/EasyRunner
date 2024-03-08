@@ -52,6 +52,10 @@ AEasyRunnerCharacter::AEasyRunnerCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	maxDeceleration = -0.74;
+
+	maxAceleration = 0.25;
 }
 
 void AEasyRunnerCharacter::BeginPlay()
@@ -84,8 +88,6 @@ void AEasyRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::Move);
 
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::Look);
 	}
 	else
 	{
@@ -96,7 +98,7 @@ void AEasyRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	float MovementVector = Value.Get<float>();
 
 	if (Controller != nullptr)
 	{
@@ -108,23 +110,17 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	
 		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
-}
-
-void AEasyRunnerCharacter::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		//const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		if (MovementVector > 0)
+		{
+			// add forward movement 
+			AddMovementInput(ForwardDirection, maxAceleration);
+		}
+		else if(MovementVector < 0)
+		{
+			// add backward movement 
+			AddMovementInput(ForwardDirection, maxDeceleration);
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), MovementVector.X);
 	}
 }
