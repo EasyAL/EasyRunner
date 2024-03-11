@@ -53,9 +53,18 @@ AEasyRunnerCharacter::AEasyRunnerCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
-	maxDeceleration = -0.74;
+	maxDeceleration = -0.74f;
 
-	maxAceleration = 0.25;
+	maxAceleration = 0.25f;
+
+	canSlowDown = true;
+	canSpeedUp = true;
+
+	speedUpStamina = 100.0f;
+	slowDownStamina = 100.0f;
+
+	//OnTestDelegate.AddDynamic(this, &AMyPlayerController::TestFunction);
+
 }
 
 void AEasyRunnerCharacter::BeginPlay()
@@ -111,15 +120,33 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 	
 		// get right vector 
 		//const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		if (MovementVector > 0)
+		if (MovementVector > 0 && canSpeedUp)
 		{
 			// add forward movement 
 			AddMovementInput(ForwardDirection, maxAceleration);
+			speedUpStamina -= 0.1f;
+
+			if (speedUpStamina < 0)
+			{
+				canSpeedUp = false;
+				OnTestDelegate.Broadcast();
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Speed Up Stamina: %f"), speedUpStamina));
 		}
-		else if(MovementVector < 0)
+		else if(MovementVector < 0 && canSlowDown)
 		{
 			// add backward movement 
 			AddMovementInput(ForwardDirection, maxDeceleration);
+			slowDownStamina -= 0.1f;
+
+			if (slowDownStamina < 0)
+			{
+				canSlowDown = false;
+				OnTestDelegate.Broadcast();
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Slow Down Stamina: %f"), slowDownStamina));
 		}
 		//UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), MovementVector.X);
 	}

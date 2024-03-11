@@ -15,6 +15,9 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+//	defining event dispatcher
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTestDelegate);
+
 UCLASS(config=Game)
 class AEasyRunnerCharacter : public ACharacter
 {
@@ -62,12 +65,30 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	//	Creating event dispatcher
+	UPROPERTY(BlueprintAssignable, Category = "Test")
+	FTestDelegate OnTestDelegate;
+
+	//UFUNCTION()
+	//void TestFunction();
 
 protected:
 	UPROPERTY(BlueprintReadWrite)
 	float maxDeceleration;
 
 	UPROPERTY(BlueprintReadWrite)
+	float slowDownStamina;
+
+	UPROPERTY(BlueprintReadWrite)
+	float speedUpStamina;
+
+	UPROPERTY(BlueprintReadWrite)
 	float maxAceleration;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool canSpeedUp;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool canSlowDown;
 };
 
