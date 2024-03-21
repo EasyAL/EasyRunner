@@ -43,6 +43,10 @@ class AEasyRunnerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Pause Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseGameAction;
+
 public:
 	AEasyRunnerCharacter();
 	
@@ -50,7 +54,9 @@ public:
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-			
+	
+	//	Called when pausing game
+	void PauseGame(const FInputActionValue& Value);
 
 protected:
 	// APawn interface

@@ -82,9 +82,6 @@ void AEasyRunnerCharacter::BeginPlay()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
 void AEasyRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -96,6 +93,9 @@ void AEasyRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::Move);
+
+		// Pausing Game
+		EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::PauseGame);
 
 	}
 	else
@@ -150,4 +150,9 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 		}
 		//UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), MovementVector.X);
 	}
+}
+
+void AEasyRunnerCharacter::PauseGame(const FInputActionValue& Value)
+{
+
 }
