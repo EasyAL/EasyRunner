@@ -86,7 +86,13 @@ protected:
 	float slowDownStamina;
 
 	UPROPERTY(BlueprintReadWrite)
+	float MaxSlowDownStamina;
+
+	UPROPERTY(BlueprintReadWrite)
 	float speedUpStamina;
+
+	UPROPERTY(BlueprintReadWrite)
+	float MaxSpeedUpStamina;
 
 	UPROPERTY(BlueprintReadWrite)
 	float maxAceleration;

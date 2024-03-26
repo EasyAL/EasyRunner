@@ -60,8 +60,11 @@ AEasyRunnerCharacter::AEasyRunnerCharacter()
 	canSlowDown = true;
 	canSpeedUp = true;
 
-	speedUpStamina = 100.0f;
-	slowDownStamina = 100.0f;
+	MaxSpeedUpStamina = 100.0f;
+	MaxSlowDownStamina = 100.0f;
+
+	speedUpStamina = MaxSpeedUpStamina;
+	slowDownStamina = MaxSlowDownStamina;
 
 	//OnTestDelegate.AddDynamic(this, &AMyPlayerController::TestFunction);
 
