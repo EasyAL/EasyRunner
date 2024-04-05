@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "WorldToHUDInterface.h"
+#include "GameFramework/HUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -99,8 +101,10 @@ void AEasyRunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::Move);
 
 		// Pausing Game
-		EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::PauseGame);
+		EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Started, this, &AEasyRunnerCharacter::PauseGame);
 
+		// Sliding
+		EnhancedInputComponent->BindAction(SlideAction, ETriggerEvent::Triggered, this, &AEasyRunnerCharacter::Slide);
 	}
 	else
 	{
@@ -136,7 +140,7 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 				OnTestDelegate.Broadcast();
 			}
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Speed Up Stamina: %f"), speedUpStamina));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Speed Up Stamina: %f"), speedUpStamina));
 		}
 		else if(MovementVector < 0 && canSlowDown)
 		{
@@ -150,7 +154,7 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 				OnTestDelegate.Broadcast();
 			}
 
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Slow Down Stamina: %f"), slowDownStamina));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Slow Down Stamina: %f"), slowDownStamina));
 		}
 		//UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), MovementVector.X);
 	}
@@ -158,18 +162,26 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 
 void AEasyRunnerCharacter::PauseGame(const FInputActionValue& Value)
 {
+	
 	//AHUD* PlayerHUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
+	AHUD* PlayerHUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
 
-	/*
-	if (PlayerHUD->GetClass()->ImplementsInterface(IInterface_MyInterface::StaticClass()))
+	if (PlayerHUD->GetClass()->ImplementsInterface(UWorldToHUDInterface::StaticClass()))
 	{
-		IInterface_MyInterface::Execute_MyInterfaceFunction(MyActor);
-	}*/
-	/*
-	if (PlayerHUD->GetClass()->ImplementsInterface(IInterface_MyInterface::StaticClass()))
-	{
-		IInterface_BPI_UIManagerCommunication::Execute_PauseTheGame(PlayerHUD);
-	}*/
+		IWorldToHUDInterface::Execute_PauseGame(PlayerHUD);
+	}
+}
 
-	//IBPI_UIManagerCommunication* s = Cast<IBPI_UIManagerCommunication>(PlayerHUD);
+void AEasyRunnerCharacter::Slide(const FInputActionValue& Value)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Passed - Is crouching: %b"), !bIsCrouched));
+
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Passed - Is crouching: %b"), !bIsCrouched));
+		if (!bIsCrouched)
+		{
+			Crouch();
+		}
+	}
 }
