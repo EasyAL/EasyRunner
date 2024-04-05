@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -157,5 +158,18 @@ void AEasyRunnerCharacter::Move(const FInputActionValue& Value)
 
 void AEasyRunnerCharacter::PauseGame(const FInputActionValue& Value)
 {
+	//AHUD* PlayerHUD = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
 
+	/*
+	if (PlayerHUD->GetClass()->ImplementsInterface(IInterface_MyInterface::StaticClass()))
+	{
+		IInterface_MyInterface::Execute_MyInterfaceFunction(MyActor);
+	}*/
+	/*
+	if (PlayerHUD->GetClass()->ImplementsInterface(IInterface_MyInterface::StaticClass()))
+	{
+		IInterface_BPI_UIManagerCommunication::Execute_PauseTheGame(PlayerHUD);
+	}*/
+
+	//IBPI_UIManagerCommunication* s = Cast<IBPI_UIManagerCommunication>(PlayerHUD);
 }
